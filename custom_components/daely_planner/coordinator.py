@@ -46,16 +46,18 @@ class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return self.entry.data.get(CONF_CALENDARS, [])
 
     def _enriched_calendars(self) -> list[dict[str, Any]]:
-        """Calendars enriched with the linked person's picture, if any."""
+        """Calendars enriched with the linked person's name/picture, if any."""
         enriched = []
         for calendar in self.calendars:
             picture = None
+            person_name = None
             person_entity_id = calendar.get(CONF_PERSON)
             if person_entity_id:
                 person_state = self.hass.states.get(person_entity_id)
                 if person_state:
                     picture = person_state.attributes.get("entity_picture")
-            enriched.append({**calendar, "picture": picture})
+                    person_name = person_state.name
+            enriched.append({**calendar, "picture": picture, "person_name": person_name})
         return enriched
 
     async def _async_update_data(self) -> dict[str, Any]:
