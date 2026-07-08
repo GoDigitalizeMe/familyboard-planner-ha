@@ -159,6 +159,10 @@ class DaelyPlannerCard extends HTMLElement {
     return { entity: match || "sensor.familienplaner_termine" };
   }
 
+  static getConfigElement() {
+    return document.createElement("daely-planner-card-editor");
+  }
+
   _weekRange() {
     const lang = this._config.language === "en" ? "en" : "de";
     const firstDay = this._config.first_day_of_week === "sunday" ? 0 : 1;
@@ -538,6 +542,103 @@ class DaelyPlannerCard extends HTMLElement {
 }
 
 customElements.define("daely-planner-card", DaelyPlannerCard);
+
+const EDITOR_LABELS = {
+  entity: "Entity",
+  title: "Titel",
+  language: "Sprache",
+  first_day_of_week: "Wochenstart",
+  show_weekends: "Wochenende anzeigen",
+  show_legend: "Legende anzeigen",
+};
+
+const EDITOR_HELPERS = {
+  entity: "Sensor-Entity der Daely-Planner-Integration",
+};
+
+class DaelyPlannerCardEditor extends HTMLElement {
+  setConfig(config) {
+    this._config = config;
+    this._render();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  connectedCallback() {
+    this._render();
+  }
+
+  _schema() {
+    return [
+      {
+        name: "entity",
+        required: true,
+        selector: { entity: { filter: { integration: "daely_planner" } } },
+      },
+      { name: "title", selector: { text: {} } },
+      {
+        name: "language",
+        selector: {
+          select: {
+            mode: "dropdown",
+            options: [
+              { value: "de", label: "Deutsch" },
+              { value: "en", label: "English" },
+            ],
+          },
+        },
+      },
+      {
+        name: "first_day_of_week",
+        selector: {
+          select: {
+            mode: "dropdown",
+            options: [
+              { value: "monday", label: "Montag" },
+              { value: "sunday", label: "Sonntag" },
+            ],
+          },
+        },
+      },
+      { name: "show_weekends", selector: { boolean: {} } },
+      { name: "show_legend", selector: { boolean: {} } },
+    ];
+  }
+
+  _render() {
+    if (!this._hass || !this._config) return;
+
+    if (!this._form) {
+      this._form = document.createElement("ha-form");
+      this._form.addEventListener("value-changed", (ev) => {
+        ev.stopPropagation();
+        this._config = ev.detail.value;
+        this.dispatchEvent(
+          new CustomEvent("config-changed", { detail: { config: this._config } })
+        );
+      });
+      this.appendChild(this._form);
+    }
+
+    const defaults = {
+      language: "de",
+      first_day_of_week: "monday",
+      show_weekends: true,
+      show_legend: true,
+    };
+
+    this._form.hass = this._hass;
+    this._form.data = { ...defaults, ...this._config };
+    this._form.schema = this._schema();
+    this._form.computeLabel = (item) => EDITOR_LABELS[item.name] || item.name;
+    this._form.computeHelper = (item) => EDITOR_HELPERS[item.name] || "";
+  }
+}
+
+customElements.define("daely-planner-card-editor", DaelyPlannerCardEditor);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
