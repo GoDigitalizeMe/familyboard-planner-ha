@@ -70,8 +70,15 @@ class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         for calendar in calendars:
             entity_id = calendar[CONF_ENTITY_ID]
             if self.hass.states.get(entity_id) is None:
-                _LOGGER.debug("Skipping unknown calendar entity %s", entity_id)
-                continue
+                # Silently treating this as "0 events" would mask a startup
+                # race (this integration loading before the calendar
+                # platform behind entity_id has finished setting up).
+                # Raising here makes async_config_entry_first_refresh()
+                # turn it into a ConfigEntryNotReady, so Home Assistant
+                # retries setup automatically instead of getting stuck
+                # showing an empty calendar until something else happens
+                # to reload the entry.
+                raise UpdateFailed(f"Calendar entity {entity_id} is not (yet) available")
 
             try:
                 response = await self.hass.services.async_call(
