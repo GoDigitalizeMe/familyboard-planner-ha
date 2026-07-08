@@ -19,9 +19,9 @@ dünner, reiner Rendering-Layer:
   sie über eine WebSocket-API (`daely_planner/get_events`) bereit. Zusätzlich
   entsteht ein schlankes Sensor-Entity (`sensor.<planer>_termine`) mit der
   Terminanzahl als Zustand.
-- **`daely-planner-card.js`** (JavaScript, ca. 500 Zeilen, keine externen
-  Abhängigkeiten) – liest nur das Sensor-Entity plus die WebSocket-API aus
-  und zeichnet das Daely-artige Wochenraster.
+- **`dist/daely-planner-card.js`** (JavaScript, ca. 500 Zeilen, keine
+  externen Abhängigkeiten) – liest nur das Sensor-Entity plus die
+  WebSocket-API aus und zeichnet das Daely-artige Wochenraster.
 
 ## Installation
 
@@ -40,8 +40,8 @@ fügst du es zweimal als benutzerdefiniertes Repository hinzu:
 
 1. Ordner `custom_components/daely_planner` nach
    `config/custom_components/daely_planner` kopieren.
-2. Datei `daely-planner-card.js` nach `config/www/daely-planner-card.js`
-   kopieren.
+2. Datei `dist/daely-planner-card.js` nach
+   `config/www/daely-planner-card.js` kopieren.
 3. In **Einstellungen → Dashboards → Ressourcen** eine Ressource hinzufügen:
    URL `/local/daely-planner-card.js`, Typ „JavaScript-Modul“.
 4. Home Assistant neu starten.
