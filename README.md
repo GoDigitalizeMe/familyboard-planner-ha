@@ -67,11 +67,15 @@ und wähle dort im Karten-Editor das eben entstandene Sensor-Entity aus.
 ## Hinweise
 
 - Termine werden alle 15 Minuten neu geladen (Coordinator) für den
-  Zeitraum -30/+60 Tage ab heute; die Karte fragt zusätzlich alle 5
+  Zeitraum ab heute bis +60 Tage; die Karte fragt zusätzlich alle 5
   Minuten aktiv nach – ideal für einen dauerhaft laufenden
-  Wand-/Tablet-Dashboard-Einsatz. Das Fenster wurde bewusst moderat
-  gehalten, da manche Kalender-Backends bei sehr großen Zeitfenstern
-  stillschweigend keine Termine mehr liefern.
+  Wand-/Tablet-Dashboard-Einsatz.
+- Es werden bewusst **keine Termine aus der Vergangenheit** abgerufen:
+  Ein `start_date_time` vor „jetzt" hat bei mindestens einem
+  Kalender-Backend dazu geführt, dass die komplette Abfrage leer
+  zurückkam statt nur den passenden Ausschnitt zu liefern. Die
+  Wochennavigation in der Karte funktioniert deshalb aktuell nur
+  vorwärts zuverlässig; vergangene Wochen zeigen ggf. keine Termine.
 - Für Ganztagestermine, die mehrere Tage umfassen, wird der Termin auf
   jedem betroffenen Tag angezeigt.
 - Der Service `calendar.get_events` mit `return_response` setzt eine

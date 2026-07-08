@@ -22,11 +22,11 @@ DEFAULT_PALETTE = [
 ]
 
 DEFAULT_SCAN_INTERVAL_MINUTES = 15
-# Some calendar platforms (e.g. certain CalDAV/Google setups) silently
-# return zero events instead of erroring when queried with a very wide
-# range. Keep this moderate rather than trying to cover the card's full
-# +/- 12 week navigation dropdown in one go.
-DEFAULT_DAYS_BEHIND = 30
+# start_date_time is always "today" (never in the past) - requesting a
+# past start date turned out to make at least one user's calendar
+# platform return zero events for the whole query instead of just the
+# in-range subset. Only the forward-looking window is configurable.
+DEFAULT_DAYS_BEHIND = 0
 DEFAULT_DAYS_AHEAD = 60
 
 PLATFORMS = ["sensor"]
