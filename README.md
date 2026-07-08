@@ -66,9 +66,12 @@ und wähle dort im Karten-Editor das eben entstandene Sensor-Entity aus.
 
 ## Hinweise
 
-- Termine werden alle 15 Minuten neu geladen (Coordinator); die Karte
-  fragt zusätzlich alle 5 Minuten aktiv nach – ideal für einen dauerhaft
-  laufenden Wand-/Tablet-Dashboard-Einsatz.
+- Termine werden alle 15 Minuten neu geladen (Coordinator) für den
+  Zeitraum -30/+60 Tage ab heute; die Karte fragt zusätzlich alle 5
+  Minuten aktiv nach – ideal für einen dauerhaft laufenden
+  Wand-/Tablet-Dashboard-Einsatz. Das Fenster wurde bewusst moderat
+  gehalten, da manche Kalender-Backends bei sehr großen Zeitfenstern
+  stillschweigend keine Termine mehr liefern.
 - Für Ganztagestermine, die mehrere Tage umfassen, wird der Termin auf
   jedem betroffenen Tag angezeigt.
 - Der Service `calendar.get_events` mit `return_response` setzt eine
