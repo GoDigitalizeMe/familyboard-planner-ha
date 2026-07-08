@@ -50,8 +50,10 @@ werden nur beim Start geladen, anders als Frontend-Ressourcen).
    „Daely Planner“ suchen.
 2. Einen Namen für den Planer vergeben (z. B. „Familie“) und die
    gewünschten Kalender auswählen.
-3. Im zweiten Schritt jedem Kalender einen Anzeigenamen und eine Farbe
-   zuweisen (Vorschlagsfarben werden automatisch vorbelegt).
+3. Im zweiten Schritt jedem Kalender einen Anzeigenamen, eine Farbe und
+   optional eine **Person** (`person.*`-Entity) zuweisen (Vorschlagsfarben
+   werden automatisch vorbelegt). Ist eine Person hinterlegt, verwendet die
+   Karte automatisch deren Profilbild statt eines Farbpunkts.
 4. Fertig – es entsteht `sensor.<name>_termine`.
 
 Farben/Kalender lassen sich später über **Konfigurieren** auf der
@@ -71,3 +73,9 @@ und wähle dort im Karten-Editor das eben entstandene Sensor-Entity aus.
   jedem betroffenen Tag angezeigt.
 - Der Service `calendar.get_events` mit `return_response` setzt eine
   halbwegs aktuelle Home-Assistant-Version voraus (siehe `hacs.json`).
+
+## Roadmap-Idee
+
+Für eine spätere Version ist eine ToDo-Verwaltung angedacht (insbesondere
+für Kinder), z. B. als eigene `todo.*`-Entities pro Person – bisher nicht
+umgesetzt.

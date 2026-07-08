@@ -6,6 +6,7 @@ CONF_CALENDARS = "calendars"
 CONF_ENTITY_ID = "entity_id"
 CONF_NAME = "name"
 CONF_COLOR = "color"
+CONF_PERSON = "person_entity_id"
 
 # Pastel palette in the spirit of the Daely family calendar, auto-assigned
 # to newly added calendars so users don't have to pick a color right away.

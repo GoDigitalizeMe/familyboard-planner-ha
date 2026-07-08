@@ -18,7 +18,15 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import selector
 
-from .const import CONF_CALENDARS, CONF_COLOR, CONF_ENTITY_ID, CONF_NAME, DEFAULT_PALETTE, DOMAIN
+from .const import (
+    CONF_CALENDARS,
+    CONF_COLOR,
+    CONF_ENTITY_ID,
+    CONF_NAME,
+    CONF_PERSON,
+    DEFAULT_PALETTE,
+    DOMAIN,
+)
 
 
 def _default_color(index: int) -> str:
@@ -48,10 +56,20 @@ def _build_color_step_schema(
         default_name = prior[CONF_NAME] if prior else friendly
         default_color = prior[CONF_COLOR] if prior else _default_color(pos - 1)
 
+        default_person = prior.get(CONF_PERSON) if prior else None
+
         fields[vol.Required(f"name_{pos}", default=default_name)] = str
         fields[
             vol.Required(f"color_{pos}", default=_hex_to_rgb(default_color))
         ] = selector.ColorRGBSelector()
+        person_key = (
+            vol.Optional(f"person_{pos}", default=default_person)
+            if default_person
+            else vol.Optional(f"person_{pos}")
+        )
+        fields[person_key] = selector.EntitySelector(
+            selector.EntitySelectorConfig(domain="person")
+        )
 
         legend_lines.append(f"{pos}. {friendly} ({entity_id})")
 
@@ -66,6 +84,7 @@ def _collect_calendars(entity_ids: list[str], user_input: dict[str, Any]) -> lis
                 CONF_ENTITY_ID: entity_id,
                 CONF_NAME: user_input[f"name_{pos}"],
                 CONF_COLOR: _rgb_to_hex(user_input[f"color_{pos}"]),
+                CONF_PERSON: user_input.get(f"person_{pos}"),
             }
         )
     return calendars

@@ -20,6 +20,7 @@ from homeassistant.util import dt as dt_util
 from .const import (
     CONF_CALENDARS,
     CONF_ENTITY_ID,
+    CONF_PERSON,
     DEFAULT_DAYS_AHEAD,
     DEFAULT_SCAN_INTERVAL_MINUTES,
     DOMAIN,
@@ -44,12 +45,26 @@ class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def calendars(self) -> list[dict[str, Any]]:
         return self.entry.data.get(CONF_CALENDARS, [])
 
+    def _enriched_calendars(self) -> list[dict[str, Any]]:
+        """Calendars enriched with the linked person's picture, if any."""
+        enriched = []
+        for calendar in self.calendars:
+            picture = None
+            person_entity_id = calendar.get(CONF_PERSON)
+            if person_entity_id:
+                person_state = self.hass.states.get(person_entity_id)
+                if person_state:
+                    picture = person_state.attributes.get("entity_picture")
+            enriched.append({**calendar, "picture": picture})
+        return enriched
+
     async def _async_update_data(self) -> dict[str, Any]:
         start = dt_util.start_of_local_day()
         end = start + timedelta(days=DEFAULT_DAYS_AHEAD)
         events: list[dict[str, Any]] = []
+        calendars = self._enriched_calendars()
 
-        for calendar in self.calendars:
+        for calendar in calendars:
             entity_id = calendar[CONF_ENTITY_ID]
             if self.hass.states.get(entity_id) is None:
                 _LOGGER.debug("Skipping unknown calendar entity %s", entity_id)
@@ -78,6 +93,7 @@ class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         "calendar_entity_id": entity_id,
                         "calendar_name": calendar["name"],
                         "color": calendar["color"],
+                        "picture": calendar.get("picture"),
                         "summary": item.get("summary", ""),
                         "description": item.get("description"),
                         "location": item.get("location"),
@@ -91,7 +107,7 @@ class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         return {
             "events": events,
-            "calendars": self.calendars,
+            "calendars": calendars,
             "range_start": start.isoformat(),
             "range_end": end.isoformat(),
         }
