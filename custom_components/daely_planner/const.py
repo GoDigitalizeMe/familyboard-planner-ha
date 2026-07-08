@@ -22,6 +22,9 @@ DEFAULT_PALETTE = [
 ]
 
 DEFAULT_SCAN_INTERVAL_MINUTES = 15
-DEFAULT_DAYS_AHEAD = 14
+# Wide enough to cover the card's week-navigation dropdown (+/- 12 weeks)
+# with margin, in both directions.
+DEFAULT_DAYS_BEHIND = 100
+DEFAULT_DAYS_AHEAD = 100
 
 PLATFORMS = ["sensor"]

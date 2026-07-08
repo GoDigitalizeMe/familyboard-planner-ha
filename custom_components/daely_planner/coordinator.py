@@ -22,6 +22,7 @@ from .const import (
     CONF_ENTITY_ID,
     CONF_PERSON,
     DEFAULT_DAYS_AHEAD,
+    DEFAULT_DAYS_BEHIND,
     DEFAULT_SCAN_INTERVAL_MINUTES,
     DOMAIN,
 )
@@ -61,8 +62,8 @@ class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return enriched
 
     async def _async_update_data(self) -> dict[str, Any]:
-        start = dt_util.start_of_local_day()
-        end = start + timedelta(days=DEFAULT_DAYS_AHEAD)
+        start = dt_util.start_of_local_day() - timedelta(days=DEFAULT_DAYS_BEHIND)
+        end = dt_util.start_of_local_day() + timedelta(days=DEFAULT_DAYS_AHEAD)
         events: list[dict[str, Any]] = []
         calendars = self._enriched_calendars()
 
