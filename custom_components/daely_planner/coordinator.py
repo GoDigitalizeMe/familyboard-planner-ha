@@ -89,6 +89,9 @@ class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 raise UpdateFailed(f"Error fetching events for {entity_id}: {err}") from err
 
             calendar_events = (response or {}).get(entity_id, {}).get("events", [])
+            _LOGGER.debug(
+                "Fetched %d event(s) for %s (%s to %s)", len(calendar_events), entity_id, start, end
+            )
             for item in calendar_events:
                 item_start = item.get("start", "")
                 events.append(

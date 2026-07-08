@@ -22,9 +22,11 @@ DEFAULT_PALETTE = [
 ]
 
 DEFAULT_SCAN_INTERVAL_MINUTES = 15
-# Wide enough to cover the card's week-navigation dropdown (+/- 12 weeks)
-# with margin, in both directions.
-DEFAULT_DAYS_BEHIND = 100
-DEFAULT_DAYS_AHEAD = 100
+# Some calendar platforms (e.g. certain CalDAV/Google setups) silently
+# return zero events instead of erroring when queried with a very wide
+# range. Keep this moderate rather than trying to cover the card's full
+# +/- 12 week navigation dropdown in one go.
+DEFAULT_DAYS_BEHIND = 30
+DEFAULT_DAYS_AHEAD = 60
 
 PLATFORMS = ["sensor"]
