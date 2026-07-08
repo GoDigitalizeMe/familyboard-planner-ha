@@ -1,0 +1,43 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Daely Planner",
+        "description": "Choose the calendars this planner should display.",
+        "data": {
+          "title": "Planner name",
+          "calendars": "Calendars"
+        }
+      },
+      "colors": {
+        "title": "Assign names & colors",
+        "description": "Give each calendar a display name and a color. The fields correspond to this order:\n{calendar_list}",
+        "data": {}
+      }
+    },
+    "error": {
+      "no_calendars": "Please select at least one calendar."
+    },
+    "abort": {
+      "already_configured": "This planner is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Select calendars",
+        "data": {
+          "calendars": "Calendars"
+        }
+      },
+      "colors": {
+        "title": "Assign names & colors",
+        "description": "Give each calendar a display name and a color. The fields correspond to this order:\n{calendar_list}",
+        "data": {}
+      }
+    },
+    "error": {
+      "no_calendars": "Please select at least one calendar."
+    }
+  }
+}

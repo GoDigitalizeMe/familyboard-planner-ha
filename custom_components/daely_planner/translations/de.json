@@ -1,0 +1,43 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Daely Planner einrichten",
+        "description": "Wähle die Kalender aus, die in diesem Familienplaner angezeigt werden sollen.",
+        "data": {
+          "title": "Name des Planers",
+          "calendars": "Kalender"
+        }
+      },
+      "colors": {
+        "title": "Namen & Farben zuweisen",
+        "description": "Gib jedem Kalender einen Anzeigenamen und eine Farbe. Die Felder entsprechen dieser Reihenfolge:\n{calendar_list}",
+        "data": {}
+      }
+    },
+    "error": {
+      "no_calendars": "Bitte wähle mindestens einen Kalender aus."
+    },
+    "abort": {
+      "already_configured": "Dieser Planer ist bereits konfiguriert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kalender auswählen",
+        "data": {
+          "calendars": "Kalender"
+        }
+      },
+      "colors": {
+        "title": "Namen & Farben zuweisen",
+        "description": "Gib jedem Kalender einen Anzeigenamen und eine Farbe. Die Felder entsprechen dieser Reihenfolge:\n{calendar_list}",
+        "data": {}
+      }
+    },
+    "error": {
+      "no_calendars": "Bitte wähle mindestens einen Kalender aus."
+    }
+  }
+}

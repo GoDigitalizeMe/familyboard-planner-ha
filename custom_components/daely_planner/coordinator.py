@@ -1,0 +1,97 @@
+"""Data update coordinator for Daely Planner.
+
+Polls every configured calendar entity via the core `calendar.get_events`
+service and merges the results into a single, color-tagged event list that
+the frontend card can consume in one shot.
+"""
+
+from __future__ import annotations
+
+from datetime import timedelta
+import logging
+from typing import Any
+
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util import dt as dt_util
+
+from .const import (
+    CONF_CALENDARS,
+    CONF_ENTITY_ID,
+    DEFAULT_DAYS_AHEAD,
+    DEFAULT_SCAN_INTERVAL_MINUTES,
+    DOMAIN,
+)
+
+_LOGGER = logging.getLogger(__name__)
+
+
+class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
+    """Fetch and merge events from all calendars configured for one planner."""
+
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=f"{DOMAIN}_{entry.entry_id}",
+            update_interval=timedelta(minutes=DEFAULT_SCAN_INTERVAL_MINUTES),
+        )
+        self.entry = entry
+
+    @property
+    def calendars(self) -> list[dict[str, Any]]:
+        return self.entry.data.get(CONF_CALENDARS, [])
+
+    async def _async_update_data(self) -> dict[str, Any]:
+        start = dt_util.start_of_local_day()
+        end = start + timedelta(days=DEFAULT_DAYS_AHEAD)
+        events: list[dict[str, Any]] = []
+
+        for calendar in self.calendars:
+            entity_id = calendar[CONF_ENTITY_ID]
+            if self.hass.states.get(entity_id) is None:
+                _LOGGER.debug("Skipping unknown calendar entity %s", entity_id)
+                continue
+
+            try:
+                response = await self.hass.services.async_call(
+                    "calendar",
+                    "get_events",
+                    {
+                        "entity_id": entity_id,
+                        "start_date_time": start.isoformat(),
+                        "end_date_time": end.isoformat(),
+                    },
+                    blocking=True,
+                    return_response=True,
+                )
+            except HomeAssistantError as err:
+                raise UpdateFailed(f"Error fetching events for {entity_id}: {err}") from err
+
+            calendar_events = (response or {}).get(entity_id, {}).get("events", [])
+            for item in calendar_events:
+                item_start = item.get("start", "")
+                events.append(
+                    {
+                        "calendar_entity_id": entity_id,
+                        "calendar_name": calendar["name"],
+                        "color": calendar["color"],
+                        "summary": item.get("summary", ""),
+                        "description": item.get("description"),
+                        "location": item.get("location"),
+                        "start": item_start,
+                        "end": item.get("end"),
+                        "all_day": "T" not in str(item_start),
+                    }
+                )
+
+        events.sort(key=lambda event: event["start"])
+
+        return {
+            "events": events,
+            "calendars": self.calendars,
+            "range_start": start.isoformat(),
+            "range_end": end.isoformat(),
+        }
