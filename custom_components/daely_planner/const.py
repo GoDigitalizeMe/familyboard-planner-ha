@@ -7,6 +7,8 @@ CONF_ENTITY_ID = "entity_id"
 CONF_NAME = "name"
 CONF_COLOR = "color"
 CONF_PERSON = "person_entity_id"
+CONF_DAYS_BEHIND = "days_behind"
+CONF_DAYS_AHEAD = "days_ahead"
 
 # Pastel palette in the spirit of the Daely family calendar, auto-assigned
 # to newly added calendars so users don't have to pick a color right away.
@@ -22,11 +24,10 @@ DEFAULT_PALETTE = [
 ]
 
 DEFAULT_SCAN_INTERVAL_MINUTES = 15
-# start_date_time is always "today" (never in the past) - requesting a
-# past start date turned out to make at least one user's calendar
-# platform return zero events for the whole query instead of just the
-# in-range subset. Only the forward-looking window is configurable.
-DEFAULT_DAYS_BEHIND = 0
+# Fallback defaults for entries that predate the days_behind/days_ahead
+# options, and pre-filled defaults in the config/options flow. 7 days
+# behind covers "the current week" without hardcoding a week-start day.
+DEFAULT_DAYS_BEHIND = 7
 DEFAULT_DAYS_AHEAD = 60
 
 PLATFORMS = ["sensor"]

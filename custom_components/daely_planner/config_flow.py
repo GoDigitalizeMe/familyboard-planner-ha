@@ -21,11 +21,19 @@ from homeassistant.helpers import selector
 from .const import (
     CONF_CALENDARS,
     CONF_COLOR,
+    CONF_DAYS_AHEAD,
+    CONF_DAYS_BEHIND,
     CONF_ENTITY_ID,
     CONF_NAME,
     CONF_PERSON,
+    DEFAULT_DAYS_AHEAD,
+    DEFAULT_DAYS_BEHIND,
     DEFAULT_PALETTE,
     DOMAIN,
+)
+
+_DAYS_SELECTOR = selector.NumberSelector(
+    selector.NumberSelectorConfig(min=0, max=365, mode=selector.NumberSelectorMode.BOX)
 )
 
 
@@ -98,6 +106,8 @@ class DaelyPlannerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         self._title: str | None = None
         self._entity_ids: list[str] = []
+        self._days_behind: int = DEFAULT_DAYS_BEHIND
+        self._days_ahead: int = DEFAULT_DAYS_AHEAD
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -106,6 +116,8 @@ class DaelyPlannerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             self._title = user_input["title"]
             self._entity_ids = user_input[CONF_CALENDARS]
+            self._days_behind = int(user_input[CONF_DAYS_BEHIND])
+            self._days_ahead = int(user_input[CONF_DAYS_AHEAD])
             if not self._entity_ids:
                 errors["base"] = "no_calendars"
             else:
@@ -117,6 +129,8 @@ class DaelyPlannerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_CALENDARS): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="calendar", multiple=True)
                 ),
+                vol.Required(CONF_DAYS_BEHIND, default=DEFAULT_DAYS_BEHIND): _DAYS_SELECTOR,
+                vol.Required(CONF_DAYS_AHEAD, default=DEFAULT_DAYS_AHEAD): _DAYS_SELECTOR,
             }
         )
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
@@ -128,7 +142,11 @@ class DaelyPlannerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             calendars = _collect_calendars(self._entity_ids, user_input)
             return self.async_create_entry(
                 title=self._title or "Daely Planner",
-                data={CONF_CALENDARS: calendars},
+                data={
+                    CONF_CALENDARS: calendars,
+                    CONF_DAYS_BEHIND: self._days_behind,
+                    CONF_DAYS_AHEAD: self._days_ahead,
+                },
             )
 
         schema, legend = _build_color_step_schema(self.hass, self._entity_ids, {})
@@ -155,6 +173,8 @@ class DaelyPlannerOptionsFlow(config_entries.OptionsFlow):
         self._existing: dict[str, dict[str, Any]] = {
             cal[CONF_ENTITY_ID]: cal for cal in config_entry.data.get(CONF_CALENDARS, [])
         }
+        self._days_behind: int = config_entry.data.get(CONF_DAYS_BEHIND, DEFAULT_DAYS_BEHIND)
+        self._days_ahead: int = config_entry.data.get(CONF_DAYS_AHEAD, DEFAULT_DAYS_AHEAD)
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -162,6 +182,8 @@ class DaelyPlannerOptionsFlow(config_entries.OptionsFlow):
         errors: dict[str, str] = {}
         if user_input is not None:
             self._entity_ids = user_input[CONF_CALENDARS]
+            self._days_behind = int(user_input[CONF_DAYS_BEHIND])
+            self._days_ahead = int(user_input[CONF_DAYS_AHEAD])
             if not self._entity_ids:
                 errors["base"] = "no_calendars"
             else:
@@ -174,6 +196,8 @@ class DaelyPlannerOptionsFlow(config_entries.OptionsFlow):
                 ): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="calendar", multiple=True)
                 ),
+                vol.Required(CONF_DAYS_BEHIND, default=self._days_behind): _DAYS_SELECTOR,
+                vol.Required(CONF_DAYS_AHEAD, default=self._days_ahead): _DAYS_SELECTOR,
             }
         )
         return self.async_show_form(step_id="init", data_schema=schema, errors=errors)
@@ -185,6 +209,8 @@ class DaelyPlannerOptionsFlow(config_entries.OptionsFlow):
             calendars = _collect_calendars(self._entity_ids, user_input)
             new_data = dict(self._config_entry.data)
             new_data[CONF_CALENDARS] = calendars
+            new_data[CONF_DAYS_BEHIND] = self._days_behind
+            new_data[CONF_DAYS_AHEAD] = self._days_ahead
             self.hass.config_entries.async_update_entry(self._config_entry, data=new_data)
             return self.async_create_entry(title="", data={})
 

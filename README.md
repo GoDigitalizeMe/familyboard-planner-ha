@@ -48,8 +48,10 @@ werden nur beim Start geladen, anders als Frontend-Ressourcen).
 
 1. **Einstellungen → Geräte & Dienste → Integration hinzufügen** →
    „Daely Planner“ suchen.
-2. Einen Namen für den Planer vergeben (z. B. „Familie“) und die
-   gewünschten Kalender auswählen.
+2. Einen Namen für den Planer vergeben (z. B. „Familie“), die
+   gewünschten Kalender auswählen sowie **Tage in die Vergangenheit**
+   und **Tage in die Zukunft** festlegen (Standard: 7 bzw. 60 Tage –
+   die 7 Tage reichen, um die aktuelle Woche abzudecken).
 3. Im zweiten Schritt jedem Kalender einen Anzeigenamen, eine Farbe und
    optional eine **Person** (`person.*`-Entity) zuweisen (Vorschlagsfarben
    werden automatisch vorbelegt). Ist eine Person hinterlegt, verwendet die
@@ -66,16 +68,16 @@ und wähle dort im Karten-Editor das eben entstandene Sensor-Entity aus.
 
 ## Hinweise
 
-- Termine werden alle 15 Minuten neu geladen (Coordinator) für den
-  Zeitraum ab heute bis +60 Tage; die Karte fragt zusätzlich alle 5
-  Minuten aktiv nach – ideal für einen dauerhaft laufenden
-  Wand-/Tablet-Dashboard-Einsatz.
-- Es werden bewusst **keine Termine aus der Vergangenheit** abgerufen:
-  Ein `start_date_time` vor „jetzt" hat bei mindestens einem
-  Kalender-Backend dazu geführt, dass die komplette Abfrage leer
-  zurückkam statt nur den passenden Ausschnitt zu liefern. Die
-  Wochennavigation in der Karte funktioniert deshalb aktuell nur
-  vorwärts zuverlässig; vergangene Wochen zeigen ggf. keine Termine.
+- Termine werden alle 15 Minuten neu geladen (Coordinator) für den bei
+  der Einrichtung festgelegten Zeitraum (Standard: -7/+60 Tage ab
+  heute, über **Konfigurieren** jederzeit änderbar); die Karte fragt
+  zusätzlich alle 5 Minuten aktiv nach – ideal für einen dauerhaft
+  laufenden Wand-/Tablet-Dashboard-Einsatz.
+- Der eigentliche Grund für zeitweise leere Kalender war nicht das
+  Abfragen der Vergangenheit, sondern eine Startreihenfolge-Race
+  (die Integration lud manchmal, bevor die Kalender-Plattform selbst
+  bereit war) – das ist seit v0.3.3 behoben (automatischer Retry statt
+  stillem „0 Termine“).
 - Für Ganztagestermine, die mehrere Tage umfassen, wird der Termin auf
   jedem betroffenen Tag angezeigt.
 - Der Service `calendar.get_events` mit `return_response` setzt eine

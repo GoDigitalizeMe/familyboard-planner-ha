@@ -19,6 +19,8 @@ from homeassistant.util import dt as dt_util
 
 from .const import (
     CONF_CALENDARS,
+    CONF_DAYS_AHEAD,
+    CONF_DAYS_BEHIND,
     CONF_ENTITY_ID,
     CONF_PERSON,
     DEFAULT_DAYS_AHEAD,
@@ -62,8 +64,10 @@ class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return enriched
 
     async def _async_update_data(self) -> dict[str, Any]:
-        start = dt_util.start_of_local_day() - timedelta(days=DEFAULT_DAYS_BEHIND)
-        end = dt_util.start_of_local_day() + timedelta(days=DEFAULT_DAYS_AHEAD)
+        days_behind = self.entry.data.get(CONF_DAYS_BEHIND, DEFAULT_DAYS_BEHIND)
+        days_ahead = self.entry.data.get(CONF_DAYS_AHEAD, DEFAULT_DAYS_AHEAD)
+        start = dt_util.start_of_local_day() - timedelta(days=days_behind)
+        end = dt_util.start_of_local_day() + timedelta(days=days_ahead)
         events: list[dict[str, Any]] = []
         calendars = self._enriched_calendars()
 

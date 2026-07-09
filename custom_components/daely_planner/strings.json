@@ -6,7 +6,9 @@
         "description": "Choose the calendars this planner should display.",
         "data": {
           "title": "Planner name",
-          "calendars": "Calendars"
+          "calendars": "Calendars",
+          "days_behind": "Days into the past",
+          "days_ahead": "Days into the future"
         }
       },
       "colors": {
@@ -27,7 +29,9 @@
       "init": {
         "title": "Select calendars",
         "data": {
-          "calendars": "Calendars"
+          "calendars": "Calendars",
+          "days_behind": "Days into the past",
+          "days_ahead": "Days into the future"
         }
       },
       "colors": {
