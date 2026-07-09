@@ -76,6 +76,10 @@ und wähle dort im Karten-Editor das eben entstandene Sensor-Entity aus.
   jedem betroffenen Tag angezeigt.
 - Der Service `calendar.get_events` mit `return_response` setzt eine
   halbwegs aktuelle Home-Assistant-Version voraus (siehe `hacs.json`).
+- Die Integration bringt eigene Icons mit (`custom_components/familyboard_planner/brand/`),
+  sichtbar in Geräte & Dienste ab Home Assistant 2026.3. HACS selbst
+  zeigt diese aktuell noch nicht an (bekannte Einschränkung,
+  [hacs/integration#5223](https://github.com/hacs/integration/issues/5223)).
 
 ## Roadmap-Idee
 
