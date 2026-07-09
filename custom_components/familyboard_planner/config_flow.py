@@ -1,4 +1,4 @@
-"""Config flow for the Daely Planner integration.
+"""Config flow for the Familyboard Planner integration.
 
 Two steps: pick the calendar entities to include, then assign a display
 name and color to each of them. The color step builds its schema
@@ -98,8 +98,8 @@ def _collect_calendars(entity_ids: list[str], user_input: dict[str, Any]) -> lis
     return calendars
 
 
-class DaelyPlannerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Daely Planner."""
+class FamilyboardPlannerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for Familyboard Planner."""
 
     VERSION = 1
 
@@ -141,7 +141,7 @@ class DaelyPlannerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             calendars = _collect_calendars(self._entity_ids, user_input)
             return self.async_create_entry(
-                title=self._title or "Daely Planner",
+                title=self._title or "Familyboard Planner",
                 data={
                     CONF_CALENDARS: calendars,
                     CONF_DAYS_BEHIND: self._days_behind,
@@ -160,11 +160,11 @@ class DaelyPlannerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
-    ) -> DaelyPlannerOptionsFlow:
-        return DaelyPlannerOptionsFlow(config_entry)
+    ) -> FamilyboardPlannerOptionsFlow:
+        return FamilyboardPlannerOptionsFlow(config_entry)
 
 
-class DaelyPlannerOptionsFlow(config_entries.OptionsFlow):
+class FamilyboardPlannerOptionsFlow(config_entries.OptionsFlow):
     """Allow editing the calendar/color selection of an existing planner."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:

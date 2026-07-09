@@ -1,4 +1,4 @@
-"""Sensor platform for Daely Planner.
+"""Sensor platform for Familyboard Planner.
 
 Exposes a lightweight entity per planner (event count + calendar metadata)
 that the frontend card uses as its anchor: it reads `config_entry_id` from
@@ -16,31 +16,31 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
-from .coordinator import DaelyPlannerCoordinator
+from .coordinator import FamilyboardPlannerCoordinator
 
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
-    coordinator: DaelyPlannerCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([DaelyPlannerSensor(coordinator, entry)])
+    coordinator: FamilyboardPlannerCoordinator = hass.data[DOMAIN][entry.entry_id]
+    async_add_entities([FamilyboardPlannerSensor(coordinator, entry)])
 
 
-class DaelyPlannerSensor(CoordinatorEntity[DaelyPlannerCoordinator], SensorEntity):
+class FamilyboardPlannerSensor(CoordinatorEntity[FamilyboardPlannerCoordinator], SensorEntity):
     """Represents one planner board (a set of calendars with colors)."""
 
     _attr_has_entity_name = True
     _attr_name = "Termine"
     _attr_icon = "mdi:calendar-heart"
 
-    def __init__(self, coordinator: DaelyPlannerCoordinator, entry: ConfigEntry) -> None:
+    def __init__(self, coordinator: FamilyboardPlannerCoordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)
         self._entry = entry
         self._attr_unique_id = f"{entry.entry_id}_events"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=entry.title,
-            manufacturer="Daely Planner",
+            manufacturer="Familyboard Planner",
             model="Familienplaner",
         )
 

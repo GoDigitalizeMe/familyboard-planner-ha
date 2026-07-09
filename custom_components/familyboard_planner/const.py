@@ -1,6 +1,6 @@
-"""Constants for the Daely Planner integration."""
+"""Constants for the Familyboard Planner integration."""
 
-DOMAIN = "daely_planner"
+DOMAIN = "familyboard_planner"
 
 CONF_CALENDARS = "calendars"
 CONF_ENTITY_ID = "entity_id"
@@ -10,8 +10,9 @@ CONF_PERSON = "person_entity_id"
 CONF_DAYS_BEHIND = "days_behind"
 CONF_DAYS_AHEAD = "days_ahead"
 
-# Pastel palette in the spirit of the Daely family calendar, auto-assigned
-# to newly added calendars so users don't have to pick a color right away.
+# Pastel palette in the spirit of a warm family wall-calendar look,
+# auto-assigned to newly added calendars so users don't have to pick a
+# color right away.
 DEFAULT_PALETTE = [
     "#F2A6A0",  # coral
     "#8FC1D4",  # sky blue

@@ -18,7 +18,7 @@ from .const import DOMAIN
 
 @websocket_api.websocket_command(
     {
-        vol.Required("type"): "daely_planner/get_events",
+        vol.Required("type"): "familyboard_planner/get_events",
         vol.Required("config_entry_id"): str,
     }
 )
@@ -26,12 +26,12 @@ from .const import DOMAIN
 async def ws_get_events(hass: HomeAssistant, connection, msg) -> None:
     coordinator = hass.data.get(DOMAIN, {}).get(msg["config_entry_id"])
     if coordinator is None:
-        connection.send_error(msg["id"], "not_found", "Unknown Daely Planner config entry")
+        connection.send_error(msg["id"], "not_found", "Unknown Familyboard Planner config entry")
         return
     connection.send_result(msg["id"], coordinator.data)
 
 
-@websocket_api.websocket_command({vol.Required("type"): "daely_planner/list_entries"})
+@websocket_api.websocket_command({vol.Required("type"): "familyboard_planner/list_entries"})
 @websocket_api.async_response
 async def ws_list_entries(hass: HomeAssistant, connection, msg) -> None:
     entries = [

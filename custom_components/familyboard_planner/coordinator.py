@@ -1,4 +1,4 @@
-"""Data update coordinator for Daely Planner.
+"""Data update coordinator for Familyboard Planner.
 
 Polls every configured calendar entity via the core `calendar.get_events`
 service and merges the results into a single, color-tagged event list that
@@ -32,7 +32,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-class DaelyPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
+class FamilyboardPlannerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Fetch and merge events from all calendars configured for one planner."""
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
